@@ -119,7 +119,61 @@ namespace SorteringsAlgoritmer
             }
             return resultat;
         }
-        
+
+        private static void QuickSort(List<int> lista, int left, int right)
+        {
+            if(left<right)
+            {
+                int pivot = Partition(lista, left, right);
+
+                if(pivot>1)
+                {
+                    QuickSort(lista, left, pivot - 1);                 
+                }
+
+                if(pivot+1<right)
+                {
+                    QuickSort(lista, pivot + 1, right);
+                }
+
+
+            }
+        }
+
+        private static int Partition(List<int> lista, int left, int right)
+        {
+            int pivot = lista[left];
+            while(true)
+            {
+                while(lista[left]<pivot)
+                {
+                    left++;
+                }
+
+                while(lista[left]>pivot)
+                {
+                    right--;
+                }
+
+                if(left<right)
+                {
+                    if (lista[left] == lista[right])
+                    {
+                        return right;
+                    }
+                    
+                    int temp = lista[left];
+                    lista[left] = lista[right];
+                    lista[right] = temp;
+                }
+                else
+                {
+                    return right;
+                }
+            }
+        }
+
+
 
         //metod för att generera en lista med slumpmässiga element
         //variabeln antal får värde i main metoden
@@ -131,6 +185,7 @@ namespace SorteringsAlgoritmer
                 list.Add(r.Next(5000));
             }
         }
+
 
         static void Main(string[] args)
         {
@@ -147,7 +202,7 @@ namespace SorteringsAlgoritmer
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            MergeSort(osorterad);  
+            QuickSort(osorterad,0,osorterad.Count-1);  
             stopWatch.Stop();
 
             //Console.WriteLine("Bubblesort: " + stopWatchB.Elapsed + "ms" + " ");
