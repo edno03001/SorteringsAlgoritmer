@@ -69,11 +69,12 @@ namespace SorteringsAlgoritmer
             List<int> right = new List<int>();
 
             int middle = osorterad.Count / 2;
+
             for (int i=0;i<middle;i++)
             {
                 left.Add(osorterad[i]);
             }
-            for(int i =0;i<osorterad.Count;i++)
+            for(int i =middle;i<osorterad.Count;i++)
             {
                 right.Add(osorterad[i]);
             }
@@ -93,14 +94,12 @@ namespace SorteringsAlgoritmer
                     if (left.First() <= right.First()) //jämför de första två elementen för att se vilken som är minst
                     {
                         resultat.Add(left.First());
-                        left.RemoveAt(0);
-                        //left.Remove(left.First()); //resten av listan minus det första elementet
+                        left.RemoveAt(0); //resten av listan minus det första elementet
                     }
                     else
                     {
                         resultat.Add(right.First());
                         right.RemoveAt(0);
-                        //right.Remove(right.First());
                     }
 
                 }
@@ -108,72 +107,53 @@ namespace SorteringsAlgoritmer
                 {
                     resultat.Add(left.First());
                     left.RemoveAt(0);
-                    //left.Remove(left.First());
                 }
                 else if (right.Count>0)
                 {
                     resultat.Add(right.First());
                     right.RemoveAt(0);
-                    //right.Remove(right.First());
                 }
             }
             return resultat;
         }
 
-        private static void QuickSort(List<int> lista, int left, int right)
+        static int Partition(List<int> data, int low, int high)
         {
-            if(left<right)
+            int pivot = data[high];
+
+            int lowIndex = (low - 1);
+
+            for(int j = low; j < high ; j++)
             {
-                int pivot = Partition(lista, left, right);
-
-                if(pivot>1)
+                if (data[j] <=pivot)
                 {
-                    QuickSort(lista, left, pivot - 1);                 
-                }
+                    lowIndex++;
 
-                if(pivot+1<right)
-                {
-                    QuickSort(lista, pivot + 1, right);
-                }
-
-
-            }
-        }
-
-        private static int Partition(List<int> lista, int left, int right)
-        {
-            int pivot = lista[left];
-            while(true)
-            {
-                while(lista[left]<pivot)
-                {
-                    left++;
-                }
-
-                while(lista[left]>pivot)
-                {
-                    right--;
-                }
-
-                if(left<right)
-                {
-                    if (lista[left] == lista[right])
-                    {
-                        return right;
-                    }
-                    
-                    int temp = lista[left];
-                    lista[left] = lista[right];
-                    lista[right] = temp;
-                }
-                else
-                {
-                    return right;
+                    int temp = data[lowIndex];
+                    data[lowIndex] = data[j];
+                    data[j] = temp;
                 }
             }
+
+            int temp1 = data[lowIndex + 1];
+            data[lowIndex + 1] = data[high];
+            data[high] = temp1;
+
+            return lowIndex + 1;
+
+
         }
 
+        static void Quicksort(List<int> lista,int low,int high)
+        {
+            if(low<high)
+            {
+                int partitionIndex = Partition(lista, low, high);
 
+                Quicksort(lista, low, partitionIndex - 1);
+                Quicksort(lista, partitionIndex + 1, high);
+            }
+        }
 
         //metod för att generera en lista med slumpmässiga element
         //variabeln antal får värde i main metoden
@@ -189,25 +169,27 @@ namespace SorteringsAlgoritmer
 
         static void Main(string[] args)
         {
+            //skapar en ny lista och testar hur lång tid det tar för algoritmen att sortera
+            for(int i = 0; i<5;i++)
+            {
+                //skapar en lista som heter tallista
+                List<int> osorterad = new List<int>();
 
-            //skapar en lista som heter tallista
-            List<int> osorterad = new List<int>();
-            List<int> sorterad;
+                SkapaLista(osorterad, 128000); //tallistan får ett antal st. element
 
-            SkapaLista(osorterad, 10); //tallistan får ett antal st. element
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                //Quicksort(osorterad,0,osorterad.Count-1); 
+                //MergeSort(osorterad);
+                //Selectionsort(osorterad);
+                //Bubblesort(osorterad);
+                stopWatch.Stop();
 
-
+                //Console.WriteLine("Bubblesort: " + stopWatchB.Elapsed + "ms" + " ");
+                //Console.WriteLine("Selectionsort: " + stopWatchS.ElapsedMilliseconds + "ms" + " ");
+                Console.WriteLine("tid: " + stopWatch.ElapsedMilliseconds + "ms");
+            }
            
-
-
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-            QuickSort(osorterad,0,osorterad.Count-1);  
-            stopWatch.Stop();
-
-            //Console.WriteLine("Bubblesort: " + stopWatchB.Elapsed + "ms" + " ");
-            //Console.WriteLine("Selectionsort: " + stopWatchS.ElapsedMilliseconds + "ms" + " ");
-            Console.WriteLine("Mergesort: " + stopWatch.ElapsedMilliseconds + "ms");
         }
 
     }
